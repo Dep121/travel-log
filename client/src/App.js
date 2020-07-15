@@ -2,6 +2,10 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import ReactMapGL, { Marker, Popup } from 'react-map-gl';
 import { listLogEntries } from './API';
+import { ReactComponent as Edit } from './assets/edit.svg';
+import { ReactComponent as Close } from './assets/close.svg';
+import { ReactComponent as Bin } from './assets/bin.svg';
+import { ReactComponent as Location } from './assets/location-icon.svg';
 import LogEntryForm from './LogEntryForm';
 
 const App = () => {
@@ -55,14 +59,13 @@ const App = () => {
                   [entry._id]: true,
                 })}
               >
-                <img
-                  className="marker"
+                <Location
+                  className='marker'
                   style={{
                     height: `${6 * viewport.zoom}px`,
                     width: `${6 * viewport.zoom}px`,
                   }}
-                  src="https://i.imgur.com/y0G5YTX.png"
-                  alt="marker"
+                  fill='orange'
                 />
               </div>
             </Marker>
@@ -73,12 +76,23 @@ const App = () => {
                     key={entry._id + 'popup'}
                     latitude={entry.latitude}
                     longitude={entry.longitude}
-                    closeButton={true}
+                    closeButton={false}
                     closeOnClick={false}
-                    onClose={() => setShowPopup({ ...showPopup, [entry._id]: false })}
                     anchor="top"
+                    className={'popupWrapper'}
                   >
                     <div className="popup">
+                      <div className="actions" >
+                        <span className='left'>
+                          <Edit title='edit-button' className='image' />
+                          <Bin title='delete-button' className='image' />
+                        </span>
+                        <span className='right'>
+                          <Close title='close-button' className='image right'
+                            onClick={() => setShowPopup({ ...showPopup, [entry._id]: false })}
+                          />
+                        </span>
+                      </div>
                       <h3>{entry.title}</h3>
                       <p>{entry.comments}</p>
                       <small>Visited on: {new Date(entry.visitDate).toLocaleDateString()}</small>
